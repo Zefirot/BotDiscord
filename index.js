@@ -14,15 +14,29 @@ const client = new Discord.Client({
         Discord.IntentsBitField.Flags.GuildMessages,
         Discord.IntentsBitField.Flags.DirectMessages,
         Discord.IntentsBitField.Flags.DirectMessageReactions,
-        Discord.IntentsBitField.Flags.MessageContent
+        Discord.IntentsBitField.Flags.MessageContent,
+        Discord.IntentsBitField.Flags.GuildVoiceStates
     ]
 })
 
-console.log("🚀 ~ process.env.TOKEN:", process.env.TOKEN)
+client.commands = new Discord.Collection();
+client.aliases = new Discord.Collection();
+
+function requiredHandlers() {
+    ["distube"].forEach(handler => {
+        try {
+            require('./handlers/'+ handler)(client, Discord)
+        } catch (error) {
+            console.warn(error);
+        }
+    })
+}
+
+requiredHandlers();
+
 client.login(process.env.TOKEN);
 
-
-client.on("ready", () => {
+/*client.on("ready", () => {
     console.log("Bot Encendido bajo el usuario: " + client.user.tag);
 })
 
@@ -38,5 +52,5 @@ client.on("messageCreate", async (message) => {
     if(cmd == "ping"){
         return message.reply("El ping del bot es: " + client.ws.ping);
     }
-})
+})*/
     
