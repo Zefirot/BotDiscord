@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
-const config = require("./config/config.json");
 require("dotenv").config();
+require("colors");
 
 const client = new Discord.Client({
     allowedMentions:{
@@ -23,34 +23,17 @@ client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
 
 function requiredHandlers() {
-    ["distube"].forEach(handler => {
+    ["command","events"].forEach(handler => {
         try {
-            require('./handlers/'+ handler)(client, Discord)
+            require('./src/handlers/'+ handler)(client, Discord)
         } catch (error) {
             console.warn(error);
         }
     })
+    
 }
 
 requiredHandlers();
 
 client.login(process.env.TOKEN);
-
-/*client.on("ready", () => {
-    console.log("Bot Encendido bajo el usuario: " + client.user.tag);
-})
-
-//Commands
-client.on("messageCreate", async (message) => {    
-    if(!message.guild || message.author.bot) {return};
-
-    const args = message.content.slice(config.prefix.length).trim().split(" ");
-    const cmd = args.shift()?.toLowerCase();
-
-    if(!message.content.startsWith(config.prefix) || !cmd || cmd.length==0) return;
-
-    if(cmd == "ping"){
-        return message.reply("El ping del bot es: " + client.ws.ping);
-    }
-})*/
     
