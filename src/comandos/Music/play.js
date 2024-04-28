@@ -6,7 +6,7 @@ module.exports = {
     desc: "Sirve para reproducir una cancion",
     run: async (client, message, args, prefix) => {
         //Comprobaciones   
-        if(!args.lenght) return message.reply("**Se debe eespecificar un nombre de cancion**");
+        if(!args.length) return message.reply("**Se debe especificar un nombre de cancion**");
         if(!message.member.voice?.channel) return message.reply("**Es necesario que estes en un canal para usar este comando**");
 
         client.distube.play(message.member.voice?.channel, args.join(" "), {
