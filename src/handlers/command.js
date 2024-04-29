@@ -1,11 +1,10 @@
-//onst { captureRejectionSymbol } = require("events");
-const { log } = require("console");
+require("colors");
 const fs = require("fs");
 const path = require("path");
 
 module.exports = (client) => {
     try {
-        console.log("Cargando Comandos");
+        console.log("Cargando Comandos".bgRed);
         let comandos = 0;
 
         const ruta = __dirname.replace("handlers","comandos");
@@ -33,7 +32,7 @@ module.exports = (client) => {
             }       
         } )
 
-        console.log("Comandos Cargados: "+comandos);
+        console.log(`Comandos Cargados: ${comandos}`.bgGreen);
 
     } catch (error) {
         console.log("🚀 ~ error:", error)

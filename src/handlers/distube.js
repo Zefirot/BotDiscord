@@ -38,6 +38,7 @@ module.exports = (client) => {
     });
 
     client.distube.on("addSong", (queue, song) => {
+        if(queue.songs.length == 1) return
         queue.textChannel.send({
             embeds: [getActualSongEmbed("Añadiendo", song)]
         })

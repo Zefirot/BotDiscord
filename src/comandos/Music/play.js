@@ -13,6 +13,6 @@ module.exports = {
             message
         });
 
-        message.reply("Buscando la cancion");
+        message.reply(`🔍 Buscando la cancion: \`${args.join(" ")}\``);
     }
 }

@@ -4,7 +4,7 @@ const allevents = [];
 
 module.exports = async (client) => {
     try {        
-        console.log("Cargando los eventos...".yellow);    
+        console.log("Cargando los eventos...".bgRed);    
 
         let cantidad = 0;
 
@@ -26,7 +26,7 @@ module.exports = async (client) => {
         }
 
         await ["client","guild"].forEach(e => cargar_dir(e));
-        console.log(cantidad+" Eventos cargados".green);
+        console.log(`${cantidad} Eventos cargados`.bgGreen);
         try{console.log("Iniciando Sesion del bot...")} catch(e) {console.log(e)}
     } catch (error) {
         console.log("🚀 ~ events.js= ~ error:", error)   
