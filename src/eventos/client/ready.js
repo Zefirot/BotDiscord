@@ -5,4 +5,6 @@ module.exports = client => {
         client.application.commands.set(client.slashArray);
         console.log("Comandos Publicados!!".green);
     }
+        
+        
 }
