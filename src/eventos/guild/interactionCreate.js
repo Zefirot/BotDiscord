@@ -5,9 +5,12 @@ module.exports = async (client, interaction) => {
 
     const command = client.slashCommands.get(interaction?.commandName)
     
-    if(command){
+    if (interaction.type == 3) { //Para los casos de interaccion mediante botones
+        client.emit("clickButton", interaction)
+    }
+    else if(command){
         command.run(client, interaction, config.prefix);
     }else{
-        return message.reply("No se encontro ningun comando relacionado");
+        return interaction.reply("No se encontro ningun comando relacionado");
     }
 }
