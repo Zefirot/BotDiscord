@@ -48,7 +48,7 @@ module.exports = class extends Client{
     }
 
     async loadCommands(){
-        console.log("Cargando Comandos".bgRed);
+        console.log("(+) Cargando Comandos".red);
         await this.commands.clear();
 
         const rutasArchivos = await this.util.loadFile("/src/comandos");
@@ -73,11 +73,11 @@ module.exports = class extends Client{
             });
         }
 
-        console.log(`${this.commands.size} Comandos Cargados`.bgGreen);
+        console.log(`${this.commands.size} Comandos Cargados`.green);
     }
 
     async loadSlashCommands(){
-        console.log("Cargando Slash Commands".bgRed);
+        console.log("(+) Cargando Slash Commands".red);
         await this.slashCommands.clear();
         this.slashArray = [];
 
@@ -106,7 +106,7 @@ module.exports = class extends Client{
             });
         }
 
-        console.log(`${this.slashCommands.size} Slash Commands Cargados`.bgGreen);
+        console.log(`${this.slashCommands.size} Slash Commands Cargados`.green);
 
         if(this?.application?.commands){
             this.application.commands.set(this.slashArray);
@@ -115,7 +115,7 @@ module.exports = class extends Client{
     }
 
     async loadHandlers(){
-        console.log("Cargando Handlers".bgRed);
+        console.log("(+)Cargando Handlers".red);
         this.commands.clear();
 
         const rutasArchivos = await this.util.loadFile("/src/handlers");
@@ -138,7 +138,7 @@ module.exports = class extends Client{
     }
 
     async loadEvents(){
-        console.log("Cargando Eventos".bgRed);
+        console.log("(+) Cargando Eventos".red);
         this.removeAllListeners();
 
         const rutasArchivos = await this.util.loadFile("src/eventos");
@@ -159,6 +159,6 @@ module.exports = class extends Client{
             });
         }
 
-        console.log(`Eventos Cargados`.bgGreen);
+        console.log(`(-) Eventos Cargados`.green);
     }
 }

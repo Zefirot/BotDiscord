@@ -1,9 +1,10 @@
 const Discord = require("discord.js");
-let paginaActual = 0;
+let paginaActual;
 
 const displayQueueEmbed = (client, message, queue) => {
     const listQueue = [];
     const maxSongsPerPage = 10;
+    paginaActual = 0;
 
     for (let i = 0; i < queue.songs.length; i += maxSongsPerPage) {
         const songs = queue.songs.slice(i, i + maxSongsPerPage);
@@ -12,8 +13,8 @@ const displayQueueEmbed = (client, message, queue) => {
 
     const embeds = [];
 
-    for (let i = 0; i < listQueue.length; i++) {
-        const description = String(listQueue[i].substring(0, 2048)); //Se asegura que la longitud del mensaje sea menor a 2048
+    listQueue.forEach( song => {
+        const description = String(song.substring(0, 2048)); //Se asegura que la longitud del mensaje sea menor a 2048
 
         const embed = new Discord.EmbedBuilder()
             .setTitle(`🎵 Cola de ${message.guild.name} - \`[${queue.songs.length} ${queue.songs.length > 1 ? "Canciones" : "Cancion"}]\``)
@@ -21,29 +22,38 @@ const displayQueueEmbed = (client, message, queue) => {
             .setDescription(description);
 
         if (queue.songs.length >= 1) embed.addFields({ name: `💿 Cancion Actual`, value: `**[\`${queue.songs[0].name}\`](${queue.songs[0].url})**` });
-
+        
         embeds.push(embed);
-    }
+    });
 
     paginacion(client, message, embeds); 
 }
 
-const paginacion = (client, message, embeds) => {
-    if(embeds.length === 1 ) return message.channel.send({embeds: [embeds[0]]});
+const paginacion = async (client, message, embeds) => {
+    if(embeds.length === 1 ) return message.reply({embeds: [embeds[0]]});
 
-    const embedPaginas = message.reply({
-        content: `**Haz click en los __Botones__ para cambiar de pagina`,
+    const buttonArray = createButtons();
+    const actionRow = new Discord.ActionRowBuilder().addComponents(buttonArray);
+
+    const embedPaginas = await message.reply({
+        content: `**Haz click en los __Botones__ para cambiar de pagina**`,
         embeds: [embeds[0].setFooter({text: `Pagina ${paginaActual+1} / ${embeds.length}`})],
-        components: [new Discord.ActionRowBuilder().addComponents(createButtons())]
+        components: [actionRow],
+        fetchReply: true
     });
 
-    const collector = embedPaginas.createMessageComponentCollector({
-        filter: i => i?.isButton(),
-        time: 5_000
+    const collector = await embedPaginas.createMessageComponentCollector({
+        componentType: Discord.ComponentType.Button,
+        time: 8_000
     })
 
-    client.on("clickButton", async button => {
-        const buttonCustomId = button?.customId;
+    //Se remueve el listener anterior
+    client.removeAllListeners("clickButton", () => {});
+
+    client.on("clickButton", async interaction => {
+        if(!interaction.isButton()) return;
+
+        const buttonCustomId = interaction?.customId;
 
         collector.resetTimer();
 
@@ -59,24 +69,19 @@ const paginacion = (client, message, embeds) => {
             paginaActual = paginaActual < embeds.length-1 ? paginaActual+1 : 0
         }
 
-        await embedPaginas.edit({
-            embeds: [embeds[paginaActual].setFooter({text: `Pagina ${paginaActual+1} / ${embeds.length}`})],
-            components: [embedPaginas.components[0]]});
-
-        await button?.deferUpdate();
-    })
-
+        await interaction.update({
+            embeds: [embeds[paginaActual].setFooter({ text: `Pagina ${paginaActual + 1} / ${embeds.length}` })],
+            components: [actionRow]
+        });
+    });
+        
     collector.on("end", async () => {
-        
-
-        console.log("🚀 ~ collector.on ~ embedPaginas.components[0].components:", embedPaginas.components[0].components[0])
-        embedPaginas.components[0].components.map(boton => boton.setDisabled(true));
-        
+        buttonArray.forEach(button => button.setDisabled(true));
 
         await embedPaginas.edit({
             content: "El tiempo ha expirado, vuelva a consultar la cola",
             embeds: [embeds[paginaActual].setFooter({ text: `Pagina ${paginaActual + 1} / ${embeds.length}` })],
-            components: [embedPaginas.components[0]]
+            components: [actionRow]
         });
     })
 }

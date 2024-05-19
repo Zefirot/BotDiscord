@@ -4,9 +4,9 @@ module.exports = async (client, interaction) => {
     if(!interaction.guild || !interaction.channel) return;
 
     const command = client.slashCommands.get(interaction?.commandName)
-    
+
     if (interaction.type == 3) { //Para los casos de interaccion mediante botones
-        client.emit("clickButton", interaction)
+        client.emit("clickButton", interaction);
     }
     else if(command){
         command.run(client, interaction, config.prefix);
