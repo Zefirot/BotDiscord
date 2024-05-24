@@ -1,6 +1,6 @@
 module.exports = {
     name: "skip",
-    aliases: ["saltar"],
+    aliases: ["s","saltar"],
     desc: "Sirve para saltar una cancion",
     run: async (client, message, args, prefix) => {
         //Comprobaciones
